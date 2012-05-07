@@ -867,3 +867,21 @@ function file_entity_file_is_local($file) {
   $wrappers = file_get_stream_wrappers(STREAM_WRAPPERS_LOCAL);
   return !empty($wrappers[$scheme]) && empty($wrappers[$scheme]['remote']);
 }
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function file_entity_ctools_plugin_api($module, $api) {
+  if (($module == 'page_manager' && $api == 'pages_default') || $module == 'panelizer') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_directory()
+ */
+function file_entity_ctools_plugin_directory($module, $plugin) {
+  if (in_array($module, array('panelizer', 'ctools', 'page_manager'))) {
+    return 'plugins/' . $plugin;
+  }
+}
