@@ -79,7 +79,7 @@ function file_entity_file_view_page($file) {
   // Load the account into a context.
   ctools_include('context');
   ctools_include('context-task-handler');
-  $contexts = ctools_context_handler_get_task_contexts($task, '', array($account));
+  $contexts = ctools_context_handler_get_task_contexts($task, '', array($file));
 
   // We need to mimic Drupal's behavior of setting the file title here.
   drupal_set_title($file->filename);
