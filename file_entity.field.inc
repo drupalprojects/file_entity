@@ -160,6 +160,11 @@ function file_entity_field_formatter_settings_form($field, $instance, $view_mode
       '#type' => 'checkbox',
       '#default_value' => $settings['loop'],
     );
+    $element['muted'] = array(
+      '#title' => t('Muted'),
+      '#type' => 'checkbox',
+      '#default_value' => $settings['muted'],
+    );
     $element['width'] = array(
       '#type' => 'textfield',
       '#title' => t('Width'),
@@ -220,10 +225,8 @@ function file_entity_field_formatter_settings_summary($field, $instance, $view_m
     if (isset($settings['multiple_file_behavior'])) {
       $summary[] = t('Multiple files: %multiple', array('%multiple' => $settings['multiple_file_behavior']));
     }
-
   }
   elseif ($display['type'] === 'file_video') {
-    $summary_items = array();
     if (isset($settings['controls'])) {
       $summary[] = t('Controls: %controls', array('%controls' => $settings['controls'] ? 'visible' : 'hidden'));
     }
@@ -333,14 +336,14 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
     if ($multiple_file_behavior == 'tags') {
       foreach ($items as $delta => $item) {
         if ($item['type'] == 'audio') {
-          $source_lists[] = array($item);
+          $source_lists[$delta] = array($item);
         }
       }
     }
     else {
       foreach ($items as $delta => $item) {
         if ($item['type'] == 'audio') {
-          $source_lists[0][] = $item;
+          $source_lists[0][$delta] = $item;
         }
       }
     }
@@ -367,14 +370,14 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
     if ($multiple_file_behavior == 'tags') {
       foreach ($items as $delta => $item) {
         if ($item['type'] == 'video') {
-          $source_lists[] = array($item);
+          $source_lists[$delta] = array($item);
         }
       }
     }
     else {
       foreach ($items as $delta => $item) {
         if ($item['type'] == 'video') {
-          $source_lists[0][] = $item;
+          $source_lists[0][$delta] = $item;
         }
       }
     }
