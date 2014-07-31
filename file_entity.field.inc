@@ -384,8 +384,6 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
 
     // Render each source list as an <video> element.
     foreach ($source_lists as $delta => $sources) {
-      $width = $settings['width'];
-      $height = $settings['height'];
       $element[$delta] = array(
         '#theme' => 'file_entity_file_video',
         '#files' => $sources,
@@ -393,8 +391,8 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
         '#autoplay' => $settings['autoplay'],
         '#loop' => $settings['loop'],
         '#muted' => $settings['muted'],
-        '#width' => ($width && $height) ? $width : NULL,
-        '#height' => ($width && $height) ? $height : NULL,
+        '#width' => $settings['width'],
+        '#height' => $settings['height'],
       );
     }
   }
