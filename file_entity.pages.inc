@@ -601,8 +601,23 @@ function file_entity_edit($form, &$form_state, $file) {
   if (file_entity_file_is_writeable($file)) {
     // Set up replacement file validation.
     $replacement_options = array();
-    // The replacement file must have the same extension as the original file.
-    $replacement_options['file_extensions'] = pathinfo($file->uri, PATHINFO_EXTENSION);
+
+    // The replacement file must have an extension valid for the original type.
+    $file_extensions = array();
+    $file_type_name = isset($file->type) ? $file->type : file_get_type($file);
+    if ($file_type_name && ($file_type = file_type_load($file_type_name))) {
+      $file_extensions = file_type_get_valid_extensions($file_type);
+    }
+
+    // Set allowed file extensions.
+    if (!empty($file_extensions)) {
+      // Set to type based file extensions.
+      $replacement_options['file_extensions'] = implode(' ', $file_extensions);
+    }
+    else {
+      // Fallback to the extension of the current file.
+      $replacement_options['file_extensions'] = pathinfo($file->uri, PATHINFO_EXTENSION);
+    }
 
     $form['replace_upload'] = array(
       '#type' => 'file',
@@ -756,14 +771,28 @@ function file_entity_edit_validate($form, &$form_state) {
  */
 function file_entity_edit_submit($form, &$form_state) {
   $file = $form_state['file'];
+  $orphaned_uri = '';
 
   // Check if a replacement file has been uploaded.
   if (!empty($form_state['values']['replace_upload'])) {
     $replacement = $form_state['values']['replace_upload'];
     // Move file from temp to permanent home.
-    if (file_unmanaged_copy($replacement->uri, $file->uri, FILE_EXISTS_REPLACE)) {
+    $destination_uri = file_uri_scheme($file->uri) . '://' . file_uri_target($replacement->uri);
+    $replace_mode = $destination_uri == $file->uri ? FILE_EXISTS_REPLACE : FILE_EXISTS_RENAME;
+    if ($new_file_uri = file_unmanaged_copy($replacement->uri, $destination_uri, $replace_mode)) {
       // @todo Add watchdog() about replaced file here?
+
+      // Remove temporary file.
       file_delete($replacement);
+
+      // Update if the uri target has changed.
+      if ($new_file_uri != $file->uri) {
+       // Store the original file uri to delete if save is sucessful.
+       $orphaned_uri = $file->uri;
+
+        // Update file entity uri.
+        $file->uri = $new_file_uri;
+      }
     }
   }
 
@@ -803,6 +832,15 @@ function file_entity_edit_submit($form, &$form_state) {
   );
   watchdog('file', '@type: updated %title.', $args);
   drupal_set_message(t('@type %title has been updated.', $args));
+
+  // Clean up orphaned file.
+  if (!empty($orphaned_uri)) {
+    file_unmanaged_delete($orphaned_uri);
+
+    $args['@orphaned'] = file_uri_target($orphaned_uri);
+    watchdog('file', '@type: deleted orphaned file @orphaned for %title.', $args);
+    drupal_set_message(t('The replaced @type @orphaned has been deleted.', $args));
+  }
 
   $form_state['redirect'] = 'file/' . $file->fid;
 
