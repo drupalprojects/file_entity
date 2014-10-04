@@ -356,7 +356,7 @@ function file_entity_add_upload_submit($form, &$form_state) {
           $form['#step'] += ($trigger == 'edit-previous') ? -1 : 1;
           $form_state['storage']['type'] = reset($candidates_keys);
         }
-        elseif (variable_get('file_entity_file_upload_wizard_skip_file_type', FALSE)) {
+        elseif (!$candidates || variable_get('file_entity_file_upload_wizard_skip_file_type', FALSE)) {
           // Do not assign the file a file type.
           $form['#step'] += ($trigger == 'edit-previous') ? -1 : 1;
           $form_state['storage']['type'] = FILE_TYPE_NONE;
