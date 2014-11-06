@@ -455,17 +455,13 @@ function file_entity_add_upload_submit($form, &$form_state) {
     }
 
     // Figure out destination.
-    if (isset($_GET['destination'])) {
-      $destination = drupal_get_destination();
-      unset($_GET['destination']);
-    }
-    elseif (user_access('administer files')) {
-      $destination = array('destination' => 'admin/content/file');
+    if (user_access('administer files')) {
+      $path = 'admin/content/file';
     }
     else {
-      $destination = array('destination' => 'file/' . $file->fid);
+      $path = 'file/' . $file->fid;
     }
-    $form_state['redirect'] = $destination['destination'];
+    $form_state['redirect'] = $path;
   }
   else {
     $form_state['rebuild'] = TRUE;
