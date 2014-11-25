@@ -138,25 +138,6 @@ class FileEntityFileTypeClassificationTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Get the file type of a given file.
-   *
-   * @param $file
-   *   A file object.
-   *
-   * @return
-   *   The file's file type as a string.
-   */
-  function getFileType($file) {
-    $type = db_select('file_managed', 'fm')
-      ->fields('fm', array('type'))
-      ->condition('fid', $file->fid, '=')
-      ->execute()
-      ->fetchAssoc();
-
-    return $type;
-  }
-
-  /**
    * Test that existing files are properly classified by file type.
    */
   function testFileTypeClassification() {
@@ -188,6 +169,25 @@ class FileEntityFileTypeClassificationTestCase extends DrupalWebTestCase {
     $this->assertEqual($file_type['type'], 'document', t('The text file was properly assigned the Document file type.'));
     $file_type = $this->getFileType($image_file);
     $this->assertEqual($file_type['type'], 'image', t('The image file was properly assigned the Image file type.'));
+  }
+
+  /**
+   * Get the file type of a given file.
+   *
+   * @param $file
+   *   A file object.
+   *
+   * @return
+   *   The file's file type as a string.
+   */
+  function getFileType($file) {
+    $type = db_select('file_managed', 'fm')
+      ->fields('fm', array('type'))
+      ->condition('fid', $file->fid, '=')
+      ->execute()
+      ->fetchAssoc();
+
+    return $type;
   }
 }
 
@@ -421,7 +421,7 @@ class FileEntityCreationTestCase extends FileEntityTestHelper {
   function setUp() {
     parent::setUp();
 
-    $web_user = $this->drupalCreateUser(array('create files', 'edit own document files'));
+    $web_user = $this->drupalCreateUser(array('create files'));
     $this->drupalLogin($web_user);
   }
 
