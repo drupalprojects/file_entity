@@ -678,11 +678,24 @@ class FileEntityAltTitleTestCase extends FileEntityTestHelper {
     $default_output = theme('image', $image_info);
     $this->assertRaw($default_output, 'Image displayed using user supplied alt and title attributes.');
 
-    // Verify that the alt and title text fields are found on the file edit
-    // page.
-    $this->drupalGet('file/' . $file->fid . '/edit');
-    $this->assertFieldByName($alt_field_name  . '[' . LANGUAGE_NONE . '][0][value]');
-    $this->assertFieldByName($title_field_name  . '[' . LANGUAGE_NONE . '][0][value]');
+    // Verify that the alt and title text can be edited.
+    $new_alt = $this->randomName();
+    $new_title = $this->randomName();
+
+    $edit = array();
+    $edit[$alt_field_name . '[' . LANGUAGE_NONE . '][0][value]'] = $new_alt;
+    $edit[$title_field_name . '[' . LANGUAGE_NONE . '][0][value]'] = $new_title;
+    $this->drupalPost('file/' . $file->fid . '/edit', $edit, t('Save'));
+
+    $image_info = array(
+      'path' => $file->uri,
+      'alt' => $new_alt,
+      'title' => $new_title,
+      'width' => $file->width,
+      'height' => $file->height,
+    );
+    $default_output = theme('image', $image_info);
+    $this->assertRaw($default_output, 'Image displayed using updated alt and title attributes.');
   }
 }
 
