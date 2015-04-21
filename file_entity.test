@@ -547,6 +547,95 @@ class FileEntityUploadWizardTestCase extends FileEntityTestHelper {
     $this->assertEqual($file->alt, $alt, t('Alt text was stored as file metadata.'));
     $this->assertEqual($file->title, $title, t('Title text was stored as file metadata.'));
   }
+
+  /**
+   * Test skipping each of the file upload wizard steps.
+   */
+  function testFileEntityUploadWizardStepSkipping() {
+    $test_file = $this->getTestFile('image');
+    $filename = $this->randomName();
+
+    // Ensure that the file is affected by every step.
+    variable_set('file_private_path', $this->private_files_directory);
+
+    $this->createFileType(array('type' => 'image1', 'label' => 'Image 1', 'mimetypes' => array('image/jpeg', 'image/gif', 'image/png', 'image/tiff')));
+    $this->createFileType(array('type' => 'image2', 'label' => 'Image 2', 'mimetypes' => array('image/jpeg', 'image/gif', 'image/png', 'image/tiff')));
+
+    $field_name = drupal_strtolower($this->randomName() . '_field_name');
+    $field = array('field_name' => $field_name, 'type' => 'text');
+    field_create_field($field);
+    $instance = array(
+      'field_name' => $field_name,
+      'entity_type' => 'file',
+      'bundle' => 'image2',
+      'label' => $this->randomName() . '_label',
+    );
+    field_create_instance($instance);
+
+    // Test skipping each upload wizard step.
+    foreach (array('types', 'schemes', 'fields') as $step) {
+      // Step to skip.
+      switch ($step) {
+        case 'types':
+          variable_set('file_entity_file_upload_wizard_skip_file_type', TRUE);
+          break;
+        case 'schemes':
+          variable_set('file_entity_file_upload_wizard_skip_scheme', TRUE);
+          break;
+        case 'fields':
+          variable_set('file_entity_file_upload_wizard_skip_fields', TRUE);
+          break;
+      }
+
+      // Step 1: Upload a basic image file.
+      $edit = array();
+      $edit['files[upload]'] = drupal_realpath($test_file->uri);
+      $this->drupalPost('file/add', $edit, t('Next'));
+
+      // Step 2: File type selection.
+      if ($step != 'types') {
+        $edit = array();
+        $edit['type'] = 'image2';
+        $this->drupalPost(NULL, $edit, t('Next'));
+      }
+
+      // Step 3: Scheme selection.
+      if ($step != 'schemes') {
+        $edit = array();
+        $edit['scheme'] = 'private';
+        $this->drupalPost(NULL, $edit, t('Next'));
+      }
+
+      // Step 4: Attached fields.
+      if ($step != 'fields') {
+        // Skipping file type selection essentially skips this step as well
+        // because the file will not be assigned a type so no fields will be
+        // available.
+        if ($step != 'types') {
+          $edit = array();
+          $edit['filename'] = $filename;
+          $edit[$field_name . '[' . LANGUAGE_NONE . '][0][value]'] = $this->randomName();
+          $this->drupalPost(NULL, $edit, t('Save'));
+        }
+      }
+
+      // Check that the file exists in the database.
+      $fid = $this->getLastFileId();
+      $file = file_load($fid);
+      $this->assertTrue($file, t('File found in database.'));
+
+      // Determine the file's file type.
+      $type = file_type_load($file->type);
+
+      // Check that the image file has been uploaded.
+      $this->assertRaw(t('!type %name was uploaded.', array('!type' => $type->label, '%name' => $file->filename)), t('Image file uploaded.'));
+
+      // Reset 'skip' variables.
+      variable_del('file_entity_file_upload_wizard_skip_file_type');
+      variable_del('file_entity_file_upload_wizard_skip_scheme');
+      variable_del('file_entity_file_upload_wizard_skip_fields');
+    }
+  }
 }
 
 /**
