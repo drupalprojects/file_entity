@@ -331,6 +331,8 @@ function file_entity_admin_files() {
   $query = db_select('file_managed', 'fm')->extend('PagerDefault')->extend('TableSort');
   $query->leftJoin('file_usage', 'fu', 'fm.fid = fu.fid');
   $query->groupBy('fm.fid');
+  $query->groupBy('fm.uid');
+  $query->groupBy('fm.timestamp');
   $query->addExpression('SUM(fu.count)', 'total_count');
   file_entity_build_filter_query($query);
 
