@@ -356,6 +356,7 @@ function file_entity_admin_files() {
   $options = array();
   foreach ($files as $file) {
     $file_type = file_type_load($file->type);
+    $account = isset($accounts[$file->uid]) ? $accounts[$file->uid] : NULL;
     $options[$file->fid] = array(
       'title' => array(
         'data' => array(
@@ -366,7 +367,7 @@ function file_entity_admin_files() {
       ),
       'type' => $file_type ? check_plain($file_type->label) : FILE_TYPE_NONE,
       'size' => format_size($file->filesize),
-      'author' => theme('username', array('account' => $accounts[$file->uid])),
+      'author' => theme('username', array('account' => $account)),
       'timestamp' => format_date($file->timestamp, 'short'),
       'usage' => format_plural((int) $result[$file->fid]->total_count, '1 place', '@count places'),
     );
