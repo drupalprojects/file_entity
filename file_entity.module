@@ -960,7 +960,7 @@ function file_entity_entity_info_alter(&$entity_info) {
   // Ensure some of the Entity API callbacks are supported.
   $entity_info['file']['creation callback'] = 'entity_metadata_create_object';
   $entity_info['file']['view callback'] = 'file_entity_metadata_view_file';
-  $entity_info['file']['edit callback'] = 'file_entity_metadata_form_file';
+  $entity_info['file']['form callback'] = 'file_entity_metadata_form_file';
   $entity_info['file']['access callback'] = 'file_entity_access';
 
   // Add integration with the Title module for file name replacement support.
