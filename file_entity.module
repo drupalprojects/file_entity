@@ -1394,7 +1394,8 @@ function file_entity_views_api() {
  *   A file object.
  */
 function file_entity_is_page($file) {
-  return (arg(0) == 'file' && arg(1) == ($file->fid));
+  $page_file = menu_get_object('file', 1);
+  return (!empty($page_file) ? $page_file->fid == $file->fid : FALSE);
 }
 
 /**
