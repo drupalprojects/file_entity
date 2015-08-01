@@ -950,6 +950,7 @@ function file_entity_entity_info_alter(&$entity_info) {
         'path' => 'admin/structure/file-types/manage/%file_type',
         'real path' => 'admin/structure/file-types/manage/' . $type->type,
         'bundle argument' => 4,
+        'access arguments' => array('administer file types'),
       ),
     );
   }
