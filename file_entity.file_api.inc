@@ -14,7 +14,7 @@ define('FILE_TYPE_NONE', 'undefined');
  * Returns information about file formatters from hook_file_formatter_info().
  *
  * @param string $formatter_type
- *   (optional) A file formatter type name. If ommitted, all file formatter
+ *   (optional) A file formatter type name. If omitted, all file formatter
  *   will be returned.
  *
  * @return string|array

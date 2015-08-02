@@ -510,7 +510,7 @@ function file_entity_add_upload_multiple($form, &$form_state, $params = array())
 
   // Ensure that we call the plupload_element_pre_render function.
   // If it isn't called, it doesn't set the JS settings that transfers the
-  // list of allowed file extentions to the PLUpload widget.
+  // list of allowed file extensions to the PLUpload widget.
   // We override the 'file_entity_upload_validators_pre_render' setting if it
   // exists, because both pre-render hooks adds the upload-help with list of
   // allowed file extensions.
@@ -810,7 +810,7 @@ function file_entity_edit_submit($form, &$form_state) {
 
       // Update if the uri target has changed.
       if ($new_file_uri != $file->uri) {
-       // Store the original file uri to delete if save is sucessful.
+       // Store the original file uri to delete if save is successful.
        $orphaned_uri = $file->uri;
 
         // Update file entity uri.
