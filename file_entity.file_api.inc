@@ -160,6 +160,9 @@ function file_build_content($file, $view_mode = 'full', $langcode = NULL) {
   // Remove previously built content, if exists.
   $file->content = array();
 
+  // Allow modules to change the view mode.
+  $view_mode = key(entity_view_mode_prepare('file', array($file->fid => $file), $view_mode, $langcode));
+
   // Build the actual file display.
   // @todo Figure out how to clean this crap up.
   $file->content['file'] = file_view_file($file, $view_mode, $langcode);
@@ -222,7 +225,8 @@ function file_view_file($file, $displays = 'full', $langcode = NULL) {
 
   // Prepare incoming display specifications.
   if (is_string($displays)) {
-    $view_mode = $displays;
+    // Allow modules to change the view mode.
+    $view_mode = key(entity_view_mode_prepare('file', array($file->fid => $file), $displays, $langcode));
     $displays = file_displays($file->type, $view_mode);
   }
   else {
