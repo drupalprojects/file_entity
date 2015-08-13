@@ -388,6 +388,24 @@ function file_entity_menu() {
     }
   }
 
+  // Devel generate integration.
+  if (module_exists('devel_generate')) {
+    $items['admin/config/development/generate/file'] = array(
+      'title' => 'Generate files',
+      'description' => 'Generate a given number of files. Optionally delete current files.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('file_entity_generate_file_form'),
+      'access arguments' => array('administer files'),
+      'file' => 'file_entity.devel_generate.inc',
+    );
+    $items['admin/content/file/generate'] = $items['admin/config/development/generate/file'];
+    $items['admin/content/file/generate']['type'] = MENU_LOCAL_ACTION;
+    $items['file/add/generate'] = $items['admin/config/development/generate/file'];
+    $items['file/add/generate']['title'] = 'Generate';
+    $items['file/add/generate']['type'] = MENU_LOCAL_TASK;
+    $items['file/add/generate']['weight'] = 50;
+  }
+
   return $items;
 }
 
