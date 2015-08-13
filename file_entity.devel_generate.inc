@@ -139,7 +139,7 @@ function file_entity_generate_file($file_type) {
   else {
     $extension = array_rand(array_flip($possible_extensions));
     module_load_include('inc', 'devel_generate', 'file.devel_generate');
-    $path = devel_generate_textfile(mt_rand(1, 1024));
+    $path = devel_generate_textfile(mt_rand(1024, 102400));
   }
 
   $uri = file_entity_generate_unique_uri($extension);
