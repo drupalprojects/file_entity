@@ -268,14 +268,14 @@ function file_entity_usage_page($file) {
         $entity_uri = empty($entities[$entity_id]) ? NULL : entity_uri($entity_type, $entities[$entity_id]);
 
         // Link the label to the URI when possible.
-        if (empty($entity_uri)) {
-          $entity = check_plain($label);
+        if (!empty($entity_uri['path'])) {
+          $entity_label = l($label, $entity_uri['path']);
         }
         else {
-          $entity = l($label, $entity_uri['path']);
+          $entity_label = check_plain($label);
         }
 
-        $rows[] = array($entity, $entity_type, $count);
+        $rows[] = array($entity_label, $entity_type, $count);
 
         // Record the occurrence of the entity to ensure that it isn't listed in
         // the table again.
