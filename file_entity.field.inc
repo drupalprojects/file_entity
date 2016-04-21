@@ -281,34 +281,19 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
 
   switch ($display['type']) {
     case 'file_rendered':
-      $view_mode = $settings['file_view_mode'];
+      $files = array();
 
-      // Prevent 'empty' fields from causing a WSOD.
-      $items = array_filter($items);
-
-      // Load and build the fully displayed nodes.
-      $files_display = array();
       foreach ($items as $delta => $item) {
-        $files_display[$item['fid']] = file_load($item['fid']);
-        if (!empty($item['description'])) {
-          $files_display[$item['fid']]->description = $item['description'];
+        if (!empty($item['file'])) {
+          $files[$item['fid']] = $item['file'];
         }
-        // @todo: Verify if referencing_entity properties are really needed.
-        // They -may- be referenced in the picture and the
-        // file_entity_link modules
-        $files_display[$item['fid']]->referencing_entity = $entity;
-        $files_display[$item['fid']]->referencing_entity_type = $entity_type;
-        $files_display[$item['fid']]->referencing_field = $field['field_name'];
       }
-      $output = file_view_multiple($files_display, $view_mode);
-      // Remove the first level from the output array.
-      $files_built = reset($output);
 
-      // Assemble the render array.
-      foreach ($items as $delta => $item) {
-        if (isset($files_built[$item['fid']])) {
-          $element[$delta] = $files_built[$item['fid']];
-        }
+      if (!empty($files)) {
+        $output = file_view_multiple($files, $settings['file_view_mode'], 0, $langcode);
+
+        // Remove the first level from the output array.
+        $element = reset($output);
       }
       break;
 
