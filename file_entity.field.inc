@@ -281,19 +281,41 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
 
   switch ($display['type']) {
     case 'file_rendered':
-      $files = array();
-
       foreach ($items as $delta => $item) {
-        if (!empty($item['file'])) {
-          $files[$item['fid']] = $item['file'];
+        // Protect ourselves from recursive rendering.
+        static $recursive_render_depth = array();
+        $recursive_render_id = $entity_type . $field['field_name'] . $item['fid'];
+
+        if (isset($recursive_render_depth[$recursive_render_id])) {
+          $recursive_render_depth[$recursive_render_id]++;
         }
-      }
+        else {
+          $recursive_render_depth[$recursive_render_id] = 1;
+        }
 
-      if (!empty($files)) {
-        $output = file_view_multiple($files, $settings['file_view_mode'], 0, $langcode);
+        if ($recursive_render_depth[$recursive_render_id] > 20) {
+          watchdog(
+            'file_entity',
+            'Recursive rendering detected when rendering entity %entity_type: %entity_id, using the %field_name field. Aborting rendering.',
+            array(
+              '%entity_type' => 'file',
+              '%entity_id' => $item['fid'],
+              '%field_name' => $field['field_name'],
+            ),
+            WATCHDOG_ERROR
+          );
+          return $element;
+        }
 
-        // Remove the first level from the output array.
-        $element = reset($output);
+        $file = (object) $item;
+
+        // Add some references to the referencing entity.
+        // @see https://www.drupal.org/node/2333107
+        $file->referencing_entity = $entity;
+        $file->referencing_entity_type = $entity_type;
+        $file->referencing_field = $field['field_name'];
+
+        $element[$delta] = file_view($file, $settings['file_view_mode'], $langcode);
       }
       break;
 
