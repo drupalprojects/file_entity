@@ -284,38 +284,50 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
       foreach ($items as $delta => $item) {
         // Protect ourselves from recursive rendering.
         static $recursive_render_depth = array();
-        $recursive_render_id = $entity_type . $field['field_name'] . $item['fid'];
+        if (!empty($item)) {
+          $recursive_render_id = $entity_type . $field['field_name'] . $item['fid'];
+          if (isset($recursive_render_depth[$recursive_render_id])) {
+            $recursive_render_depth[$recursive_render_id]++;
+          }
+          else {
+            $recursive_render_depth[$recursive_render_id] = 1;
+          }
 
-        if (isset($recursive_render_depth[$recursive_render_id])) {
-          $recursive_render_depth[$recursive_render_id]++;
-        }
-        else {
-          $recursive_render_depth[$recursive_render_id] = 1;
-        }
+          if ($recursive_render_depth[$recursive_render_id] > 20) {
+            watchdog(
+              'file_entity',
+              'Recursive rendering detected when rendering entity %entity_type: %entity_id, using the %field_name field. Aborting rendering.',
+              array(
+                '%entity_type' => 'file',
+                '%entity_id' => $item['fid'],
+                '%field_name' => $field['field_name'],
+              ),
+              WATCHDOG_ERROR
+            );
+            return $element;
+          }
 
-        if ($recursive_render_depth[$recursive_render_id] > 20) {
+          $file = file_load($item['fid']);
+
+          // Add some references to the referencing entity.
+          // @see https://www.drupal.org/node/2333107
+          $file->referencing_entity = $entity;
+          $file->referencing_entity_type = $entity_type;
+          $file->referencing_field = $field['field_name'];
+
+          $element[$delta] = file_view($file, $settings['file_view_mode'], $langcode);
+        } else {
           watchdog(
             'file_entity',
-            'Recursive rendering detected when rendering entity %entity_type: %entity_id, using the %field_name field. Aborting rendering.',
+            'In the %referencing_entity_type, the %field_name field refers to a %entity_type which does not exist. Aborting the render for it.',
             array(
-              '%entity_type' => 'file',
-              '%entity_id' => $item['fid'],
+              '%referencing_entity_type' => $entity_type,
               '%field_name' => $field['field_name'],
+              '%entity_type' => 'file',
             ),
             WATCHDOG_ERROR
           );
-          return $element;
         }
-
-        $file = (object) $item;
-
-        // Add some references to the referencing entity.
-        // @see https://www.drupal.org/node/2333107
-        $file->referencing_entity = $entity;
-        $file->referencing_entity_type = $entity_type;
-        $file->referencing_field = $field['field_name'];
-
-        $element[$delta] = file_view($file, $settings['file_view_mode'], $langcode);
       }
       break;
 
