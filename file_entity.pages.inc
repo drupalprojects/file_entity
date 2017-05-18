@@ -398,6 +398,7 @@ function file_entity_add_upload_submit($form, &$form_state) {
   // We have the filetype, check if we can skip step 4.
   if (($form['#step'] == 3 && $trigger == 'edit-next')) {
     $file = file_load($form_state['storage']['upload']);
+    $form_state['file'] = $file;
     if (!field_info_instances('file', $form_state['storage']['type'])) {
       // This filetype doesn't have fields, save the file.
       $save = TRUE;
