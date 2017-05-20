@@ -332,9 +332,10 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
       break;
 
     case 'file_download_link':
+      // Prevent 'empty' fields from causing a WSOD.
+      $items = array_filter($items);
       foreach ($items as $delta => $item) {
-        $file = (object) $item;
-        if (file_entity_access('download', $file)) {
+        if (!empty($item['fid']) && ($file = file_load($item['fid'])) && file_entity_access('download', $file)) {
           $element[$delta] = array(
             '#theme' => 'file_entity_download_link',
             '#file' => $file,
