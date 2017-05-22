@@ -355,14 +355,14 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
       $source_lists = array();
       if ($multiple_file_behavior == 'tags') {
         foreach ($items as $delta => $item) {
-          if ($item['type'] == 'audio') {
+          if (file_entity_file_get_mimetype_type($item) == 'audio') {
             $source_lists[$delta] = array($item);
           }
         }
       }
       else {
         foreach ($items as $delta => $item) {
-          if ($item['type'] == 'audio') {
+          if (file_entity_file_get_mimetype_type($item) == 'audio') {
             $source_lists[0][$delta] = $item;
           }
         }
@@ -391,14 +391,14 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
       $source_lists = array();
       if ($multiple_file_behavior == 'tags') {
         foreach ($items as $delta => $item) {
-          if ($item['type'] == 'video') {
+          if (file_entity_file_get_mimetype_type($item) == 'video') {
             $source_lists[$delta] = array($item);
           }
         }
       }
       else {
         foreach ($items as $delta => $item) {
-          if ($item['type'] == 'video') {
+          if (file_entity_file_get_mimetype_type($item) == 'video') {
             $source_lists[0][$delta] = $item;
           }
         }

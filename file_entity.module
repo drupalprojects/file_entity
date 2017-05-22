@@ -2502,6 +2502,9 @@ function file_entity_download_uri($file) {
 }
 
 function file_entity_file_get_mimetype_type($file) {
+  if (is_array($file)) {
+    $file = (object) $file;
+  }
   list($type, $subtype) = explode('/', $file->filemime, 2);
   return $type;
 }
