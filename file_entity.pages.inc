@@ -79,7 +79,10 @@ function file_entity_download_page($file) {
  * - Edit fields
  *   Skip this step if there are no fields on this entity type.
  */
-function file_entity_add_upload($form, &$form_state, array $options = array()) {
+function file_entity_add_upload($form, &$form_state, $options = array()) {
+  if (!is_array($options)) {
+    $options = array($options);
+  }
   $step = (isset($form_state['step']) && in_array($form_state['step'], array(1, 2, 3, 4))) ? $form_state['step'] : 1;
   $form['#step'] = $step;
   $form['#options'] = $options;
