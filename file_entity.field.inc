@@ -315,7 +315,9 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
           $file->referencing_entity_type = $entity_type;
           $file->referencing_field = $field['field_name'];
 
-          $element[$delta] = file_view($file, $settings['file_view_mode'], $langcode);
+          // Untranslatable fields are rendered with no language code, fall back
+          // to the content language in that case.
+          $element[$delta] = file_view($file, $settings['file_view_mode'], $langcode !== LANGUAGE_NONE ? $langcode : NULL);
         } else {
           watchdog(
             'file_entity',
