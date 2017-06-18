@@ -308,6 +308,12 @@ function file_entity_field_formatter_view($entity_type, $entity, $field, $instan
           }
 
           $file = file_load($item['fid']);
+          if (isset($item['display'])) {
+            $file->display = $item['display'];
+          }
+          if (isset($item['description'])) {
+            $file->description = $item['description'];
+          }
 
           // Add some references to the referencing entity.
           // @see https://www.drupal.org/node/2333107
