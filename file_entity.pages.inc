@@ -873,6 +873,9 @@ function file_entity_edit_submit($form, &$form_state) {
   if (file_uri_scheme($file->uri) != $form_state['values']['scheme']) {
     $file_destination = $form_state['values']['scheme'] . '://' . file_uri_target($file->uri);
     $file_destination = file_stream_wrapper_uri_normalize($file_destination);
+    $file_destination_dirname = drupal_dirname($file_destination);
+    // Create the directory in case it doesn't exist.
+    file_prepare_directory($file_destination_dirname, FILE_CREATE_DIRECTORY);
     if ($moved_file = file_move($file, $file_destination, FILE_EXISTS_RENAME)) {
       // Only re-assign the file object if file_move() did not fail.
       $file = $moved_file;
