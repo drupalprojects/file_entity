@@ -1832,7 +1832,7 @@ function _file_entity_query_file_entity_access_alter($query, $type) {
   if (!$base_table) {
     $fallback = '';
     foreach ($tables as $alias => $table_info) {
-      if (!($table_info instanceof SelectQueryInterface)) {
+      if (!($table_info instanceof SelectQueryInterface || $table_info['table'] instanceof SelectQueryInterface)) {
         $table = $table_info['table'];
         // If the file_managed table is in the query, it wins immediately.
         if ($table == 'file_managed') {
