@@ -1141,8 +1141,8 @@ function file_entity_file_formatter_info() {
       'label' => t('Image'),
       'default settings' => array(
         'image_style' => '',
-        'alt' => '[file:field_file_image_alt_text]',
-        'title' => '[file:field_file_image_title_text]'
+        'alt' => '[file:field-file-image-alt-text]',
+        'title' => '[file:field-file-image-title-text]'
       ),
       'view callback' => 'file_entity_file_formatter_file_image_view',
       'settings callback' => 'file_entity_file_formatter_file_image_settings',
