@@ -93,6 +93,7 @@ class FileEntityServicesTest extends RESTTestBase {
     $this->assertResponse(404);
 
     // POST node to create new.
+    unset($response_data['nid']);
     unset($response_data['created']);
     unset($response_data['changed']);
     unset($response_data['status']);
