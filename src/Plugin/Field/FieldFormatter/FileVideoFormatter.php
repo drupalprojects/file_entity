@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- *  Contains Drupal\file_entity\Plugin\Field\FieldFormatter\FileVideoFormatter.
- */
-
 namespace Drupal\file_entity\Plugin\Field\FieldFormatter;
 
 

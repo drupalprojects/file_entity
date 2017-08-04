@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\file_entity\FileEntityServiceProvider.
- */
 
 namespace Drupal\file_entity;
 

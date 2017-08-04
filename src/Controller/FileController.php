@@ -1,8 +1,4 @@
 <?php
-/**
- * @file
- * Contains \Drupal\file_entity\Controller\FileController.
- */
 
 namespace Drupal\file_entity\Controller;
 

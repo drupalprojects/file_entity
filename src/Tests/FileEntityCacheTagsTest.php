@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\file_entity\Tests\FileEntityCacheTagsTest.
- */
-
 namespace Drupal\file_entity\Tests;
 
 use Drupal\Component\Utility\SafeMarkup;
