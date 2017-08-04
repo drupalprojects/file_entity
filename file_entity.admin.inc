@@ -328,12 +328,20 @@ function file_entity_admin_files() {
     'operations' => array('data' => t('Operations')),
   );
 
+  if (variable_get('file_entity_total_count_optimization', FALSE)) {
+    // If the total_count is being retrieved by subqueries,
+    // the table is not sortable by this column.
+    unset($header['usage']['field']);
+  }
+
   $query = db_select('file_managed', 'fm')->extend('PagerDefault')->extend('TableSort');
-  $query->leftJoin('file_usage', 'fu', 'fm.fid = fu.fid');
-  $query->groupBy('fm.fid');
-  $query->groupBy('fm.uid');
-  $query->groupBy('fm.timestamp');
-  $query->addExpression('SUM(fu.count)', 'total_count');
+  if (!variable_get('file_entity_total_count_optimization', FALSE)) {
+    $query->leftJoin('file_usage', 'fu', 'fm.fid = fu.fid');
+    $query->groupBy('fm.fid');
+    $query->groupBy('fm.uid');
+    $query->groupBy('fm.timestamp');
+    $query->addExpression('SUM(fu.count)', 'total_count');
+  }
   file_entity_build_filter_query($query);
 
   $result = $query
@@ -343,6 +351,24 @@ function file_entity_admin_files() {
     ->addTag('file_access')
     ->execute()
     ->fetchAllAssoc('fid');
+
+  if (variable_get('file_entity_total_count_optimization', FALSE)) {
+    // Get the total_count in separate queries, otherwise the main
+    // query will take too long.
+    // This setting can be configured under /admin/config/development/performance
+    foreach ($result as &$file_result) {
+      $count_query =  db_select('file_usage', 'fu')
+        ->fields('fu', array('fid', 'count'))
+        ->condition('fu.fid', $file_result->fid, '=');
+      $count_query->addExpression('SUM(fu.count)', 'total_count');
+      $count_result = $count_query->execute()->fetchAll();
+
+      if (!empty($count_result[0]->total_count)) {
+        $file_result->total_count = $count_result[0]->total_count;
+      }
+    }
+  }
+
   $files = file_load_multiple(array_keys($result));
 
   $uids = array();
