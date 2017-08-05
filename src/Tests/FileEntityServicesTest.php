@@ -25,6 +25,7 @@ class FileEntityServicesTest extends RESTTestBase {
   public static $modules = array(
     'node',
     'hal',
+    'rest',
     'file_entity'
   );
 
