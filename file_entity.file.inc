@@ -155,6 +155,8 @@ function file_entity_file_mimetype_mapping_alter(&$mapping) {
   $new_mappings['mka'] = 'audio/x-matroska';
   $new_mappings['mkv'] = 'video/x-matroska';
 
+  // Add support for autocad drawings.
+  $new_mappings['dwg'] = 'application/acad';
   // Add support for weba, webm, and webp.
   // @todo Remove when http://drupal.org/node/1443070 is fixed in core.
   $new_mappings['weba'] = 'audio/webm';
