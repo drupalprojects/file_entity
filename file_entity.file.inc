@@ -178,12 +178,45 @@ function file_entity_file_mimetype_mapping_alter(&$mapping) {
  */
 function file_entity_file_load($files) {
   // Add alt and title text to images.
+  file_entity_set_title_alt_properties($files);
+
+  // Load and unserialize metadata.
+  $results = db_query("SELECT * FROM {file_metadata} WHERE fid IN (:fids)", array(':fids' => array_keys($files)));
+
+  foreach ($results as $result) {
+    $name = $result->name;
+
+    // image.module required height and width to be properties of the file.
+    if ($name == 'height' || $name == 'width') {
+      $files[$result->fid]->$name = unserialize($result->value);
+    }
+
+    $files[$result->fid]->metadata[$name] = unserialize($result->value);
+  }
+}
+
+/**
+ * Implements hook_entitycache_ENTITY_TYPE_load().
+ */
+function file_entitycache_file_load($files) {
+  // Integrates with entitycache - ensures the alt and title text on images is
+  // localized.
+  file_entity_set_title_alt_properties($files);
+}
+
+/**
+ * Set the title / alt properties of file objects.
+ *
+ * @param array $files List of file entities.
+ */
+function file_entity_set_title_alt_properties($files) {
   $alt = variable_get('file_entity_alt', '[file:field_file_image_alt_text]');
   $title = variable_get('file_entity_title', '[file:field_file_image_title_text]');
 
   $replace_options = array(
     'clear' => TRUE,
     'sanitize' => FALSE,
+    'language' => $GLOBALS['language'],
   );
 
   foreach ($files as $file) {
@@ -206,20 +239,6 @@ function file_entity_file_load($files) {
       // token so we revert the encoding done during tokenization.
       $file->title = decode_entities($output);
     }
-  }
-
-  // Load and unserialize metadata.
-  $results = db_query("SELECT * FROM {file_metadata} WHERE fid IN (:fids)", array(':fids' => array_keys($files)));
-
-  foreach ($results as $result) {
-    $name = $result->name;
-
-    // image.module required height and width to be properties of the file.
-    if ($name == 'height' || $name == 'width') {
-      $files[$result->fid]->$name = unserialize($result->value);
-    }
-
-    $files[$result->fid]->metadata[$name] = unserialize($result->value);
   }
 }
 
