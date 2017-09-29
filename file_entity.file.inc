@@ -152,6 +152,7 @@ function file_entity_file_delete($file) {
 function file_entity_file_mimetype_mapping_alter(&$mapping) {
   // For info on adding new mime-types to core: http://drupal.org/node/1443070.
 
+  // @todo. Remove after fixing this in core http://drupal.org/node/2912875.
   // Add support for autocad drawings.
   $new_mappings['dwg'] = 'application/acad';
   // For info on adding new mime-types to file_entity: drupal.org/node/2900830.
