@@ -150,18 +150,11 @@ function file_entity_file_delete($file) {
  * Implements hook_file_mimetype_mapping_alter().
  */
 function file_entity_file_mimetype_mapping_alter(&$mapping) {
-  // Add support for mka and mkv.
-  // @todo Remove when http://drupal.org/node/1443070 is fixed in core.
-  $new_mappings['mka'] = 'audio/x-matroska';
-  $new_mappings['mkv'] = 'video/x-matroska';
+  // For info on adding new mime-types to core: http://drupal.org/node/1443070.
 
   // Add support for autocad drawings.
   $new_mappings['dwg'] = 'application/acad';
-  // Add support for weba, webm, and webp.
-  // @todo Remove when http://drupal.org/node/1443070 is fixed in core.
-  $new_mappings['weba'] = 'audio/webm';
-  $new_mappings['webm'] = 'video/webm';
-  $new_mappings['webp'] = 'image/webp';
+  // For info on adding new mime-types to file_entity: drupal.org/node/2900830.
 
   foreach ($new_mappings as $extension => $mime_type) {
     if (!in_array($mime_type, $mapping['mimetypes'])) {
