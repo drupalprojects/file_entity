@@ -1083,6 +1083,23 @@ function file_entity_settings_form($form, &$form_state) {
     '#element_validate' => array('_file_generic_settings_max_filesize'),
   );
 
+  $form['file_entity_default_file_directory'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Default file directory'),
+    '#default_value' => variable_get('file_entity_default_file_directory', ''),
+    '#maxlength' => NULL,
+  );
+  if (module_exists('token')) {
+    $form['file_entity_default_file_directory']['#description'] = t('Optional subdirectory within the upload destination where files will be stored if the file is uploaded through the file entity overview page and the directory is not specified otherwise. Do not include preceding or trailing slashes. This field supports tokens.  Suggest using: [current-date:custom:Y]/[current-date:custom:m]/[current-date:custom:d]');
+    $form['file_entity_default_file_directory']['tokens'] = array(
+      '#theme' => 'token_tree',
+      '#dialog' => TRUE,
+    );
+  }
+  else {
+    $form['file_entity_default_file_directory']['#description'] = t('Optional subdirectory within the upload destination where files will be stored if the file is uploaded through the file entity overview page and the directory is not specified otherwise. Do not include preceding or trailing slashes.');
+  }
+
   $form['file_entity_default_allowed_extensions'] = array(
     '#type' => 'textfield',
     '#title' => t('Default allowed file extensions'),
