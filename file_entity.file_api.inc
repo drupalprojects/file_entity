@@ -498,25 +498,50 @@ function file_type_is_disabled($type) {
  * Returns an array of valid file extensions.
  */
 function file_type_get_valid_extensions($type) {
-  include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
-  $mapping = file_mimetype_mapping();
+  // @todo Consider adding actual caching for this function.
+  $extensions = &drupal_static(__FUNCTION__, array());
 
-  $type_extensions = array();
-  $type_ext_keys = array();
-  if (!empty($type->mimetypes)) {
-    foreach ($mapping['mimetypes'] as $ext_key => $mimetype) {
-      if (file_entity_match_mimetypes($mimetype, $type->mimetypes)) {
-        $type_ext_keys[] = $ext_key;
+  if (!isset($extensions[$type->type])) {
+    include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+    $mapping = file_mimetype_mapping();
+
+    $type_extensions = array();
+    $type_ext_keys = array();
+    if (!empty($type->mimetypes)) {
+      foreach ($mapping['mimetypes'] as $ext_key => $mimetype) {
+        if (file_entity_match_mimetypes($mimetype, $type->mimetypes)) {
+          $type_ext_keys[] = $ext_key;
+        }
+      }
+
+      if ($type_ext_keys) {
+        $type_extensions = array_intersect($mapping['extensions'], $type_ext_keys);
+        $type_extensions = array_unique(array_keys($type_extensions));
+        sort($type_extensions);
       }
     }
 
-    if ($type_ext_keys) {
-      $type_extensions = array_intersect($mapping['extensions'], $type_ext_keys);
-      $type_extensions = array_keys($type_extensions);
-    }
+    $extensions[$type->type] = $type_extensions;
   }
 
-  return $type_extensions;
+  return $extensions[$type->type];
+}
+
+/**
+ * Returns an array of valid file extensions.
+ */
+function file_type_get_all_valid_extensions(array $types = NULL) {
+  if (!isset($types)) {
+    $types = file_type_get_enabled_types();
+  }
+
+  $extensions = array();
+  foreach ($types as $type) {
+    $extensions = array_merge($extensions, file_type_get_valid_extensions($type));
+  }
+  $extensions = array_unique($extensions);
+  sort($extensions);
+  return $extensions;
 }
 
 /**

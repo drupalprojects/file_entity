@@ -2104,7 +2104,11 @@ function file_entity_file_default_types() {
     'label' => t('Image'),
     'description' => t('An <em>Image</em> file is a still visual.'),
     'mimetypes' => array(
-      'image/*',
+      'image/gif',
+      'image/jpeg',
+      'image/png',
+      'image/svg+xml',
+      'image/webp',
     ),
   );
 
@@ -2115,7 +2119,13 @@ function file_entity_file_default_types() {
     'label' => t('Video'),
     'description' => t('A <em>Video</em> file is a moving visual recording.'),
     'mimetypes' => array(
-      'video/*',
+      'video/mp4',
+      'video/mpeg',
+      'video/ogg',
+      'video/quicktime',
+      'video/webm',
+      'video/x-m4v',
+      'video/x-msvideo',
     ),
   );
 
@@ -2126,7 +2136,10 @@ function file_entity_file_default_types() {
     'label' => t('Audio'),
     'description' => t('An <em>Audio</em> file is a sound recording.'),
     'mimetypes' => array(
-      'audio/*',
+      'audio/mpeg',
+      'audio/ogg',
+      'audio/webm',
+      'audio/x-wav',
     ),
   );
 

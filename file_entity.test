@@ -1269,7 +1269,7 @@ class FileEntityTypeTestCase extends FileEntityTestHelper {
     // Edit exported file type.
     $this->drupalGet('admin/structure/file-types/manage/image/edit');
     $this->assertRaw(t('Image'), 'Label found on file type edit page');
-    $this->assertText("image/*", 'Mime-type configuration found on file type edit page');
+    $this->assertText("image/gif\nimage/jpeg\nimage/png\nimage/svg+xml\nimage/webp", 'Mime-type configuration found on file type edit page');
     $this->drupalPost(NULL, array('label' => t('Funky images')), t('Save'));
     $this->assertText(t('The file type @type has been updated.', array('@type' => t('Funky images'))), 'File type was modified.');
     $this->assertText(t('Funky image'), 'Modified label found on file types list.');
