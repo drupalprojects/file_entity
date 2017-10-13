@@ -1082,21 +1082,10 @@ function file_entity_get_upload_validators(array $options = array()) {
   // Set up file upload validators.
   $validators = array();
 
-  // Get filetypes, could be added by media browser.
-  if (!empty($options['types'])) {
-    $file_types = file_type_load_multiple($options['types']);
-  }
-
   // Validate file extensions. If there are no file extensions in $params and
   // there are no Media defaults, there is no file extension validation.
   if (!empty($options['file_extensions'])) {
     $validators['file_validate_extensions'] = array($options['file_extensions']);
-  }
-  elseif (!empty($options['types']) && $file_type_extensions = file_type_get_all_valid_extensions($file_types)) {
-    $validators['file_validate_extensions'] = array(implode(' ', $file_type_extensions));
-  }
-  elseif ($file_type_extensions = file_type_get_all_valid_extensions()) {
-    $validators['file_validate_extensions'] = array(implode(' ', $file_type_extensions));
   }
   else {
     $validators['file_validate_extensions'] = array(variable_get('file_entity_default_allowed_extensions', 'jpg jpeg gif png txt doc docx xls xlsx pdf ppt pptx pps ppsx odt ods odp mp3 mov mp4 m4a m4v mpeg avi ogg oga ogv weba webp webm'));
