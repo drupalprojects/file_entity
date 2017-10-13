@@ -2159,7 +2159,9 @@ function file_entity_file_default_types() {
     'label' => t('Document'),
     'description' => t('A <em>Document</em> file is written information.'),
     'mimetypes' => array(
+      'text/html',
       'text/plain',
+      'application/acad',
       'application/msword',
       'application/vnd.ms-excel',
       'application/pdf',
