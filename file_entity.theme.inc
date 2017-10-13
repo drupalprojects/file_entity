@@ -53,7 +53,10 @@ function theme_file_entity_file_link($variables) {
     $options['attributes']['title'] = check_plain($file->filename);
   }
 
-  return '<span class="file">' . $icon . ' ' . l($link_text, $url, $options) . '</span>';
+  $output = '<span class="file">' . $icon . ' ' . l($link_text, $uri['path'], $uri['options']);
+  $output .= ' ' . '<span class="file-size">(' . format_size($file->filesize) . ')</span>';
+  $output .= '</span>';
+  return $output;
 }
 
 /**
