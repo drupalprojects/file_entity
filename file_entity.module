@@ -894,10 +894,6 @@ function file_entity_theme() {
       'variables' => array(
         'files' => array(),
         'controls' => TRUE,
-        'controls_list' => array(
-          'download' => 'download',
-          'remote_playback' => 'remote_playback',
-        ),
         'autoplay' => FALSE,
         'loop' => FALSE,
         'preload' => NULL,
@@ -908,11 +904,6 @@ function file_entity_theme() {
       'variables' => array(
         'files' => array(),
         'controls' => TRUE,
-        'controls_list' => array(
-          'fullscreen' => 'fullscreen',
-          'download' => 'download',
-          'remote_playback' => 'remote_playback',
-        ),
         'autoplay' => FALSE,
         'loop' => FALSE,
         'muted' => FALSE,
