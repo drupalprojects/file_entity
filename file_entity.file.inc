@@ -203,16 +203,24 @@ function file_entitycache_file_load($files) {
 /**
  * Set the title / alt properties of file objects.
  *
- * @param array $files List of file entities.
+ * @param array $files
+ *   List of file entities.
+ * @param stdClass $language
+ *   (optional) A language object to use for translating the title and alt
+ *   properties. Defaults to the language of the current request.
  */
-function file_entity_set_title_alt_properties($files) {
+function file_entity_set_title_alt_properties($files, $language = NULL) {
+  if (!isset($language)) {
+    $language = $GLOBALS['language'];
+  }
+
   $alt = variable_get('file_entity_alt', '[file:field_file_image_alt_text]');
   $title = variable_get('file_entity_title', '[file:field_file_image_title_text]');
 
   $replace_options = array(
     'clear' => TRUE,
     'sanitize' => FALSE,
-    'language' => $GLOBALS['language'],
+    'language' => $language,
   );
 
   foreach ($files as $file) {
