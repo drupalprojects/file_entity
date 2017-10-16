@@ -1687,11 +1687,14 @@ function file_entity_access($op, $file = NULL, $account = NULL) {
   // $file may be either an object or a file type. Since file types cannot be
   // an integer, use either fid or type as the static cache id.
   $cache_id = NULL;
-  if (!empty($file->id)) {
-    $cache_id = $file->id;
+  if (is_object($file) && !empty($file->fid)) {
+    $cache_id = $file->fid;
   }
-  elseif (is_string($file) && $op == 'create') {
+  elseif ($op == 'create' && is_string($file)) {
     $cache_id = $file;
+  }
+  elseif ($op == 'create' && is_object($file) && !empty($file->type)) {
+    $cache_id = $file->type;
   }
   else {
     $cache_id = drupal_hash_base64(serialize($file));
