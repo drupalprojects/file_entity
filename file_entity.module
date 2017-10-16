@@ -1758,18 +1758,18 @@ function file_entity_access($op, $file = NULL, $account = NULL) {
  * Implements hook_file_entity_access().
  */
 function file_entity_file_entity_access($op, $file, $account) {
+  // If the op is "create," all that's needed is to check the create permission.
+  if ($op == 'create') {
+    if (user_access('create files')) {
+      return FILE_ENTITY_ACCESS_ALLOW;
+    }
+  }
   // If the file URI is invalid, deny access.
   if (is_object($file) && isset($file->uri) && !file_valid_uri($file->uri)) {
     if(isset($file->is_new) && $file->is_new == true && user_access('create files')) {
       return FILE_ENTITY_ACCESS_ALLOW;
     }
     return FILE_ENTITY_ACCESS_DENY;
-  }
-
-  if ($op == 'create') {
-    if (user_access('create files')) {
-      return FILE_ENTITY_ACCESS_ALLOW;
-    }
   }
 
   if (!empty($file)) {
