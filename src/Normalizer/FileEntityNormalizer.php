@@ -48,6 +48,7 @@ class FileEntityNormalizer extends ContentEntityNormalizer {
     else {
       throw new \RuntimeException(SafeMarkup::format('Failed to write @filename.', array('@filename' => $entity->getFilename())));
     }
+    $entity->status = FILE_STATUS_PERMANENT;
     return $entity;
   }
 }
