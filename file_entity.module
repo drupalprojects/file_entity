@@ -92,6 +92,44 @@ function file_entity_action_info_alter(&$actions) {
 }
 
 /**
+ * Implements hook_field_info_alter().
+ */
+function file_entity_field_info_alter(&$info) {
+  if (isset($info['file'])) {
+    $info['file']['class'] = '\Drupal\file_entity\Plugin\Field\FieldType\FileEntityItem';
+  }
+}
+
+/**
+ * Checks that the filename ends with an allowed extension.
+ *
+ * @param \Drupal\file\FileInterface $file
+ *   A file entity.
+ * @param string $extensions
+ *   A string with a space separated list of allowed extensions.
+ *
+ * @return array
+ *   An empty array if the file extension is allowed or an array containing an
+ *   error message if it's not.
+ *
+ * @see hook_file_validate()
+ */
+function file_entity_validate_extensions(FileInterface $file, $extensions) {
+  $errors = [];
+
+  // The filename of a newly created file will contain the extension, whereas
+  // the file URI will be a temporary filename, without the extension, until it
+  // has been saved. Once saved, the file name may no longer match the file URI,
+  // which will contain the actual file extension.
+  $compare = $file->isNew() ? $file->getFilename() : $file->getFileUri();
+  $regex = '/\.(' . preg_replace('/ +/', '|', preg_quote($extensions)) . ')$/i';
+  if (!preg_match($regex, $compare)) {
+    $errors[] = t('Only files with the following extensions are allowed: %files-allowed.', ['%files-allowed' => $extensions]);
+  }
+  return $errors;
+}
+
+/**
  * Implements hook_field_formatter_info_alter().
  */
 function file_entity_field_formatter_info_alter(array &$info) {
