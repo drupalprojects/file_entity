@@ -21,6 +21,7 @@ use Drupal\Core\Utility\LinkGeneratorInterface;
  *   label = @Translation("Responsive image"),
  *   field_types = {
  *     "uri",
+ *     "file_uri"
  *   }
  * )
  */
