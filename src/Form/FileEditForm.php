@@ -52,7 +52,7 @@ class FileEditForm extends ContentEntityForm {
         // Set up replacement file validation.
         $replacement_options = array();
         // Replacement file must have the same extension as the original file.
-        $replacement_options['file_extensions'] = pathinfo($file->getFileUri(), PATHINFO_EXTENSION);
+        $replacement_options['file_extensions'] = pathinfo($file->getFilename(), PATHINFO_EXTENSION);
 
         $form['replace_upload'] = array(
           '#type' => 'managed_file',
@@ -60,16 +60,10 @@ class FileEditForm extends ContentEntityForm {
           '#upload_validators' => $this->getUploadValidators($replacement_options),
         );
 
-        // Replace options given for core extension validation handler, so that
-        // the correct extensions will be listed in the file upload help.
-        $upload_validators = $form['replace_upload']['#upload_validators'];
-        if (isset($upload_validators['file_entity_validate_extensions'])) {
-          $upload_validators['file_validate_extensions'] = $upload_validators['file_entity_validate_extensions'];
-        }
         $file_upload_help = array(
           '#theme' => 'file_upload_help',
           '#description' => $this->t('This file will replace the existing file. This action cannot be undone.'),
-          '#upload_validators' => $upload_validators,
+          '#upload_validators' => $form['replace_upload']['#upload_validators'],
         );
         $form['replace_upload']['#description'] = drupal_render($file_upload_help);
       }

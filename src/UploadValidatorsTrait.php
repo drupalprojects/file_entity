@@ -26,10 +26,7 @@ trait UploadValidatorsTrait {
     // Validate file extensions. If there are no file extensions in $params and
     // there are no Media defaults, there is no file extension validation.
     if (!empty($options['file_extensions'])) {
-      $validators['file_entity_validate_extensions'] = array($options['file_extensions']);
-      // Set core extension validation handler, so that its default extension
-      // validation does not run as well as file_entity_validate_extensions().
-      $validators['file_validate_extensions'] = array();
+      $validators['file_validate_extensions'] = array($options['file_extensions']);
     }
 
     // Cap the upload size according to the system or user defined limit.
