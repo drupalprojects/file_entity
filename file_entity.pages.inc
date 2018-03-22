@@ -256,6 +256,8 @@ function file_entity_add_upload_step_fields($form, &$form_state, array $options 
  * Page callback to show file usage information.
  */
 function file_entity_usage_page($file) {
+  drupal_set_title(t('<em>Usage of @type</em> @title', array('@type' => $file->type, '@title' => $file->filename)), PASS_THROUGH);
+
   $rows = array();
   $occured_entities = array();
 
